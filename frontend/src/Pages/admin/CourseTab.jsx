@@ -185,27 +185,70 @@ const CourseTab = () => {
 }
 
 
-  const togglePublishUnpublish = async () => {
-    try {
-      const action = publish ? 'false' : 'true'
+  // const togglePublishUnpublish = async () => {
+  //   try {
+  //     const action = publish ? 'false' : 'true'
 
-      const res = await axios.patch(
-        `${backendURL}/api/course/${id}`,
-        { action },
-        {
-          withCredentials: true,
-        }
-      )
-      if (res.data.success) {
-        setPublish(!publish)
-        toast.success(res.data.message)
-        setSelectedCourse((prev) => ({ ...prev, isPublished: !publish }))
-      }
-    } catch (error) {
-      console.error(error)
-      toast.error('Failed to update publish status')
+  //     const res = await axios.patch(
+  //       `${backendURL}/api/course/${id}`,
+  //       { action },
+  //       {
+  //         withCredentials: true,
+  //       }
+  //     )
+  //     if (res.data.success) {
+  //       setPublish(!publish)
+  //       toast.success(res.data.message)
+  //       setSelectedCourse((prev) => ({ ...prev, isPublished: !publish }))
+  //     }
+  //   } catch (error) {
+  //     console.error(error)
+  //     toast.error('Failed to update publish status')
+  //   }
+  // }
+
+
+  const togglePublishUnpublish = async () => {
+  if (!publish) {
+    // Trying to publish – check for required fields
+    const requiredFields = [
+      'courseTitle',
+      'subTitle',
+      'description',
+      'category',
+      'courseLevel',
+      'targetAudience',
+      'features',
+      'requirements',
+      'whatYouWillLearn'
+    ]
+
+    const missingFields = requiredFields.filter(field => !input[field]?.trim())
+    if (missingFields.length > 0) {
+      toast.error('Please fill in all required fields before publishing.')
+      return
     }
   }
+
+  try {
+    const action = publish ? 'false' : 'true'
+    const res = await axios.patch(
+      `${backendURL}/api/course/${id}`,
+      { action },
+      { withCredentials: true }
+    )
+
+    if (res.data.success) {
+      setPublish(!publish)
+      toast.success(res.data.message)
+      setSelectedCourse((prev) => ({ ...prev, isPublished: !publish }))
+    }
+  } catch (error) {
+    console.error(error)
+    toast.error('Failed to update publish status')
+  }
+}
+
 
   const removeCourseHandler = async () => {
     if (!window.confirm('Are you sure you want to delete this course? This action cannot be undone.')) return
