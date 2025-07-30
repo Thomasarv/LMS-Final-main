@@ -9,7 +9,7 @@ export const createCourse = async(req, res)=> {
         const {courseTitle, category} = req.body;
         if(!courseTitle || !category){
             return res.status(400).json({
-                messge:"Course title and category is required",
+                message:"Course title and category is required",
                 success:false
             })
         }
@@ -37,6 +37,7 @@ export const getPublishedCourse = async(_, res)=>{
         const courses = await Course.find({isPublished:true}).populate({path:"creator", select:"name photoUrl description"})
         if(!courses){
             return res.status(404).json({
+               success:false,
                 message:"Course not found"
             })
         }
@@ -155,6 +156,7 @@ export const getCourseLecture = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({
+            success:false,
             message:"Failed to get Lectures"
         })
     }

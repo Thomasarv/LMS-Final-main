@@ -235,7 +235,7 @@ export const unenrollFromCourse = async (req, res) => {
     res.status(200).json({ success: true, message: 'User unenrolled successfully', updatedUser: user });
   } catch (error) {
     console.error('Unenroll error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ success:false , message: 'Internal server error' });
   }
 };
 
