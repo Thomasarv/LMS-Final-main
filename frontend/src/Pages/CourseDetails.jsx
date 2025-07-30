@@ -34,7 +34,7 @@ const CourseDetails = () => {
   const [input, setInput] = useState({
     starRating: selectedCourse?.starRating || 0,
     reviewCount: selectedCourse?.reviewCount || 0,
-    oldPrice: selectedCourse?.oldPrice || 599,
+    oldPrice: selectedCourse?.oldPrice || 0,
     targetAudience: selectedCourse?.targetAudience || "",
   });
 
