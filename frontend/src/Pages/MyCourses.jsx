@@ -1,0 +1,173 @@
+// import React, { useEffect } from 'react'
+// import axios from 'axios'
+// import { useSelector, useDispatch } from 'react-redux'
+// import { toast } from 'sonner'
+// import CourseCard from '@/components/CourseCard'
+
+// const MyCourses = () => {
+//   const dispatch = useDispatch()
+//   const { user } = useSelector(state => state.auth)
+//   const { course } = useSelector(state => state.course) // We'll set enrolled courses here
+
+//   // Fetch enrolled courses on mount or when user changes
+//   useEffect(() => {
+//     if (!user?._id) return
+
+//     const fetchEnrolledCourses = async () => {
+//       try {
+//         const res = await axios.get(
+//           `http://localhost:8000/api/user/${user._id}/enrolled`,
+//           { withCredentials: true }
+//         )
+//         if (res.data.success) {
+//           // Assume res.data.courses is array of enrolled courses
+//           dispatch({ type: 'course/setCourse', payload: res.data.courses })
+//         }
+//       } catch (error) {
+//         toast.error('Failed to load enrolled courses')
+//       }
+//     }
+
+//     fetchEnrolledCourses()
+//   }, [user, dispatch])
+
+//   return (
+//     <div className='bg-gray-100 pt-20 min-h-screen'>
+//       <div className='max-w-7xl mx-auto py-10 px-4'>
+//         <h1 className='text-3xl font-bold text-center mb-6 text-gray-800'>
+//           My Enrolled Courses
+//         </h1>
+
+//         {course.length === 0 ? (
+//           <p className='text-center text-gray-600'>You haven’t enrolled in any courses yet.</p>
+//         ) : (
+//           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+//             {course.map((courseItem) => (
+//               <CourseCard key={courseItem._id} course={courseItem} />
+//             ))}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   )
+// }
+
+// // export default MyCourses
+
+
+// import React, { useEffect } from 'react'
+// import axios from 'axios'
+// import { useSelector, useDispatch } from 'react-redux'
+// import { toast } from 'sonner'
+// import CourseCard from '@/components/CourseCard'
+
+// const MyCourses = () => {
+//       const backendURL = import.meta.env.VITE_BACKEND_URL;
+//   const dispatch = useDispatch()
+//   const { user } = useSelector(state => state.auth)
+//   const { course } = useSelector(state => state.course) // We'll set enrolled courses here
+
+//   // Fetch enrolled courses on mount or when user changes
+//   useEffect(() => {
+//     if (!user?._id) return
+
+//     const fetchEnrolledCourses = async () => {
+//       try {
+//         const res = await axios.get(
+//           `${backendURL}/api/user/${user._id}/enrolled`,
+//           { withCredentials: true }
+//         )
+//         if (res.data.success) {
+//           // Assume res.data.courses is array of enrolled courses
+//           dispatch({ type: 'course/setCourse', payload: res.data.courses })
+//         }
+//       } catch (error) {
+//         toast.error('Failed to load enrolled courses')
+//       }
+//     }
+
+//     fetchEnrolledCourses()
+//   }, [user, dispatch])
+
+//   return (
+//     <div className='bg-gray-100 pt-20 min-h-screen'>
+//       <div className='max-w-7xl mx-auto py-10 px-2 sm:px-4'>
+//         <h1 className='text-3xl font-bold text-center mb-6 text-gray-800'>
+//           My Enrolled Courses
+//         </h1>
+
+//         {course.length === 0 ? (
+//           <p className='text-center text-gray-600'>You haven’t enrolled in any courses yet.</p>
+//         ) : (
+//           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+//             {course.map((courseItem) => (
+//               <CourseCard key={courseItem._id} course={courseItem} />
+//             ))}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   )
+// }
+
+// export default MyCourses
+
+
+
+
+
+import React, { useEffect } from 'react'
+import axios from 'axios'
+import { useSelector, useDispatch } from 'react-redux'
+import { toast } from 'sonner'
+import CourseCard from '@/components/CourseCard'
+import { setEnrolledCourses } from '@/redux/courseSlice'
+
+const MyCourses = () => {
+  const backendURL = import.meta.env.VITE_BACKEND_URL
+  const dispatch = useDispatch()
+  const { user } = useSelector(state => state.auth)
+  const { enrolledCourses = [] } = useSelector(state => state.course)
+
+  useEffect(() => {
+    if (!user?._id) return
+
+    const fetchEnrolledCourses = async () => {
+      try {
+        const res = await axios.get(
+          `${backendURL}/api/user/${user._id}/enrolled`,
+          { withCredentials: true }
+        )
+        if (res.data.success) {
+          dispatch(setEnrolledCourses(res.data.courses))
+        }
+      } catch (error) {
+        toast.error('Failed to load enrolled courses')
+      }
+    }
+
+    fetchEnrolledCourses()
+  }, [user, dispatch])
+
+  return (
+    <div className='bg-gray-100 pt-20 min-h-screen'>
+      <div className='max-w-7xl mx-auto py-10 px-2 sm:px-4'>
+        <h1 className='text-3xl font-bold text-center mb-6 text-gray-800'>
+          My Enrolled Courses
+        </h1>
+
+        {enrolledCourses.length === 0 ? (
+          <p className='text-center text-gray-600'>You haven’t enrolled in any courses yet.</p>
+        ) : (
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+            {enrolledCourses.map((courseItem) => (
+              <CourseCard key={courseItem._id} course={courseItem} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default MyCourses
